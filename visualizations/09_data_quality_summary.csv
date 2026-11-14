@@ -1,0 +1,11 @@
+Metric,Value
+Total original records,4980
+Number of stock symbols,10
+Missing cells,0
+Duplicate rows by StockCode and Date,0
+Ticker missing observed market sessions,0
+DailyReturn outliers (IQR),407
+Volume outliers (log1p IQR),37
+Total flagged outlier observations,444
+Invalid OHLC or negative volume rows,0
+Invalid dates,0
