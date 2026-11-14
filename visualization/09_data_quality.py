@@ -1,4 +1,4 @@
-﻿from pathlib import Path
+from pathlib import Path
 import numpy as np
 import pandas as pd
 
@@ -248,3 +248,13 @@ print("Invalid OHLC / volume rows:", invalid_count)
 
 print("\nOriginal data was not modified.")
 print("Reports saved to:", OUTPUT_DIR)
+
+print("\nMETRIC GUIDE:")
+print("- Missing cells: null values after parsing; percentage is calculated per column.")
+print("- Duplicate records: repeated StockCode + Date keys.")
+print("- Ticker session gaps: a stock has no row on a date observed for another stock.")
+print("- DailyReturn outliers: IQR rule applied to daily percentage returns per stock.")
+print("- Volume outliers: IQR rule applied to log1p(Volume), with bounds converted back to shares.")
+print("- IQR flags values below Q1 - 1.5*IQR or above Q3 + 1.5*IQR.")
+print("- Outliers are flagged for review, not deleted.")
+print("- A ticker gap alone cannot determine whether the cause is suspension or source coverage.")

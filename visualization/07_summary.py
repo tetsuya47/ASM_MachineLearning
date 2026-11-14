@@ -1,4 +1,4 @@
-﻿from common import load_data, OUTPUT_DIR
+from common import load_data, OUTPUT_DIR
 
 df = load_data()
 
@@ -21,3 +21,11 @@ summary.to_csv(output, encoding="utf-8-sig")
 print("\n===== STOCK SUMMARY =====")
 print(summary)
 print("\nSaved:", output)
+
+print("\nCOLUMN GUIDE:")
+print("- Average_Close: arithmetic mean of daily Close (VND).")
+print("- Highest_Price: maximum observed High (VND).")
+print("- Lowest_Price: minimum observed Low (VND).")
+print("- Average_Volume: arithmetic mean of daily Volume (shares).")
+print("- Growth_Percent: (last observed Close / first observed Close - 1) * 100.")
+print("- Growth_Percent is an endpoint comparison; corporate-action adjustments are not assessed here.")

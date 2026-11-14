@@ -1,4 +1,4 @@
-﻿from pathlib import Path
+from pathlib import Path
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -32,3 +32,18 @@ def load_data():
     print("Stock symbols:", sorted(df["StockCode"].unique()))
 
     return df
+
+
+def add_chart_note(fig, df, method_note=""):
+    """Add source, actual date range, stock coverage, and method note."""
+    if df.empty:
+        note = "Source: all_stocks_20241113_20261113.csv | No records"
+    else:
+        start = df["Date"].min().strftime("%d/%m/%Y")
+        end = df["Date"].max().strftime("%d/%m/%Y")
+        note = ("Source: all_stocks_20241113_20261113.csv"
+                f" | Period: {start}–{end}"
+                f" | Stocks: {df['StockCode'].nunique()}")
+    if method_note:
+        note += f" | {method_note}"
+    fig.text(0.01, 0.01, note, ha="left", va="bottom", fontsize=8, color="dimgray")
