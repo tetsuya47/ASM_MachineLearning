@@ -1,0 +1,12 @@
+Metric,Value
+Original records,4980
+Rows quarantined for missing required values,0
+Duplicate rows removed,0
+Invalid OHLC / negative volume rows quarantined,0
+Cleaned records retained,4980
+Ticker-specific observed session gaps,0
+Verified exchange holidays,25
+Unverified market-wide missing weekdays,0
+DailyReturn outliers treated in adjusted column,407
+Volume outliers treated in adjusted column,37
+Total outlier observations,444
