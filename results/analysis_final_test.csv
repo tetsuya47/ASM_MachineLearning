@@ -1,0 +1,4 @@
+﻿,Accuracy,Balanced Acc,Precision(Tang),Recall(Tang),F1-macro,ROC-AUC
+Baseline (lop da so Train),0.573,0.5,0.0,0.0,0.364,
+SVM (RBF) (nguong 0.5),0.524,0.514,0.443,0.444,0.514,0.521
+SVM (RBF) (nguong 0.48),0.523,0.506,0.435,0.393,0.506,0.521

@@ -1,0 +1,30 @@
+{
+  "baseline_test": {
+    "Accuracy": 0.573,
+    "Balanced Acc": 0.5,
+    "Precision(Tang)": 0.0,
+    "Recall(Tang)": 0.0,
+    "F1-macro": 0.364
+  },
+  "selected_model": "SVM (RBF)",
+  "selected_features": [
+    "ret_lag1",
+    "rsi14",
+    "return"
+  ],
+  "threshold": 0.48,
+  "cv_auc": [
+    0.5273,
+    0.0469
+  ],
+  "cv_f1_macro": [
+    0.5277,
+    0.0224
+  ],
+  "test_auc": 0.5209,
+  "test_auc_ci95": [
+    0.4669,
+    0.583
+  ],
+  "deployed_logreg_threshold": 0.5
+}

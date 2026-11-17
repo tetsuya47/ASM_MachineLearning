@@ -1,0 +1,4 @@
+﻿Model,Best params,CV AUC
+LogReg,"{""model__C"": 10}",0.5224
+SVM (RBF),"{""model__C"": 0.1, ""model__gamma"": ""scale""}",0.5443
+Random Forest,"{""model__max_depth"": 2, ""model__min_samples_leaf"": 20, ""model__n_estimators"": 200}",0.5336

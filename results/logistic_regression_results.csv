@@ -1,0 +1,4 @@
+﻿Model,CV Accuracy,Accuracy (Train),Accuracy (Test),Balanced Acc,Precision(Tang),Recall(Tang),F1-macro,ROC-AUC,CV F1-macro
+LogReg (mac dinh),0.503,0.543,0.55,0.511,0.45,0.241,0.49,0.513,0.481
+LogReg (class_weight=balanced),0.512,0.554,0.511,0.498,0.425,0.405,0.498,0.514,0.503
+Baseline (luon doan Giam/Dung),,,0.573,0.5,0.0,0.0,0.364,,
