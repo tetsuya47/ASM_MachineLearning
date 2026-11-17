@@ -1,9 +1,8 @@
-
+venv/
 .venv/
+env/
+ENV/
 __pycache__/
-*.py[cod]
-.pytest_cache/
+*.pyc
 .ipynb_checkpoints/
 .env
-.env.*
-!.env.example
