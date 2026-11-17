@@ -1,0 +1,62 @@
+{
+  "owner": "Nguoi 2 - Feature Engineering",
+  "source_file": "visualizations/10_cleaned_data.csv",
+  "task": "binary_classification_next_session_direction",
+  "feature_columns": [
+    "return",
+    "ret_lag1",
+    "ret_lag2",
+    "ret5",
+    "ma_ratio",
+    "close_vs_ma20",
+    "range_pct",
+    "close_pos",
+    "volume_change",
+    "vol_ratio",
+    "vol10",
+    "rsi14"
+  ],
+  "label_column": "label",
+  "label_definition": "1 neu Close phien giao dich tiep theo cung ma > Close hien tai; nguoc lai 0",
+  "metadata_columns": [
+    "StockCode",
+    "Date",
+    "target_date"
+  ],
+  "main_handoff_files": {
+    "train": "clf_train.csv (feature chua scale, label 0/1)",
+    "test": "clf_test.csv (feature chua scale, label 0/1)"
+  },
+  "scaled_files": {
+    "train": "clf_train_scaled.csv",
+    "test": "clf_test_scaled.csv",
+    "scaler": "standard_scaler.joblib"
+  },
+  "scaler_rule": "StandardScaler.fit tren X_train; X_test chi duoc transform",
+  "split_rule": "Chia theo ngay giao dich duy nhat tren tat ca ma; khong shuffle; purge Train neu target_date cham sang Test",
+  "test_start_date": "2026-06-29",
+  "train_last_feature_date": "2026-06-25",
+  "test_first_feature_date": "2026-06-29",
+  "train_rows": 3810,
+  "test_rows": 960,
+  "symbols": [
+    "BID",
+    "CTG",
+    "GAS",
+    "HPG",
+    "MBB",
+    "TCB",
+    "VCB",
+    "VHM",
+    "VIC",
+    "VPB"
+  ],
+  "train_label_distribution": {
+    "0": 2009,
+    "1": 1801
+  },
+  "test_label_distribution": {
+    "0": 550,
+    "1": 410
+  }
+}
