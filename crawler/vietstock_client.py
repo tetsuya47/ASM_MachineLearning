@@ -1,7 +1,8 @@
 
 import re
 import time
-from datetime import datetime
+import calendar
+from datetime import datetime, timedelta
 
 import pandas as pd
 from playwright.sync_api import sync_playwright
@@ -12,6 +13,7 @@ API_URL = f"{BASE_URL}/data/gettradingresult"
 
 
 class VietstockClient:
+
     def __init__(self):
         self.playwright = None
         self.browser = None
@@ -20,16 +22,20 @@ class VietstockClient:
 
     def initialize(self):
         self.playwright = sync_playwright().start()
-        self.browser = self.playwright.chromium.launch(headless=False)
+        self.browser = self.playwright.chromium.launch(
+            headless=False
+        )
         self.context = self.browser.new_context()
         self.page = self.context.new_page()
 
         print("Dang mo Vietstock...")
+
         self.page.goto(
             BASE_URL,
             wait_until="domcontentloaded",
             timeout=60000
         )
+
         self.page.wait_for_timeout(3000)
 
     def _get_token(self):
@@ -42,6 +48,7 @@ class VietstockClient:
                 value = token.get_attribute("value")
                 if value:
                     return value
+
         except Exception:
             pass
 
@@ -57,22 +64,47 @@ class VietstockClient:
             return None
 
         text = str(value)
+
         match = re.search(r"/Date\((-?\d+)", text)
 
         if match:
             timestamp = int(match.group(1)) / 1000
-            return datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d")
+
+            return datetime.fromtimestamp(
+                timestamp
+            ).strftime("%Y-%m-%d")
 
         try:
             return pd.to_datetime(value).strftime("%Y-%m-%d")
+
         except Exception:
-            return text
+            return None
+
+    @staticmethod
+    def _add_months(date, months):
+        month = date.month - 1 + months
+        year = date.year + month // 12
+        month = month % 12 + 1
+
+        day = min(
+            date.day,
+            calendar.monthrange(year, month)[1]
+        )
+
+        return date.replace(
+            year=year,
+            month=month,
+            day=day
+        )
 
     def _request_page(self, payload, symbol, page_index):
+
         for attempt in range(1, 4):
+
             try:
                 if self.page.is_closed():
                     self.page = self.context.new_page()
+
                     self.page.goto(
                         BASE_URL,
                         wait_until="domcontentloaded",
@@ -81,27 +113,33 @@ class VietstockClient:
 
                 result = self.page.evaluate(
                     """async ({url, payload}) => {
+
                         const body = new URLSearchParams(payload);
 
                         const response = await fetch(url, {
                             method: "POST",
                             credentials: "same-origin",
+
                             headers: {
                                 "Content-Type":
                                     "application/x-www-form-urlencoded; charset=UTF-8",
+
                                 "X-Requested-With": "XMLHttpRequest"
                             },
+
                             body: body.toString()
                         });
 
                         const text = await response.text();
 
                         let data;
+
                         try {
                             data = JSON.parse(text);
                         } catch {
                             throw new Error(
-                                "API khong tra JSON: " + text.slice(0, 200)
+                                "API khong tra JSON: " +
+                                text.slice(0, 200)
                             );
                         }
 
@@ -110,7 +148,11 @@ class VietstockClient:
                             data: data
                         };
                     }""",
-                    {"url": API_URL, "payload": payload}
+
+                    {
+                        "url": API_URL,
+                        "payload": payload
+                    }
                 )
 
                 if result["status"] != 200:
@@ -121,6 +163,7 @@ class VietstockClient:
                 return result["data"]
 
             except Exception as error:
+
                 print(
                     f"{symbol}: thu lai trang {page_index} "
                     f"({attempt}/3): {error}"
@@ -137,30 +180,45 @@ class VietstockClient:
                         wait_until="domcontentloaded",
                         timeout=60000
                     )
+
                     self.page.wait_for_timeout(2000)
+
                 except Exception:
                     pass
 
         return None
 
-    def get_trading_data(self, symbol, start_date, end_date):
-        token = self._get_token()
+    def _get_date_range(
+        self,
+        symbol,
+        start_date,
+        end_date,
+        token
+    ):
 
         all_rows = []
         page_index = 1
         page_size = 100
 
         while True:
+
             payload = {
                 "Code": symbol,
                 "OrderBy": "",
                 "OrderDirection": "desc",
                 "PageIndex": str(page_index),
                 "PageSize": str(page_size),
+
                 "FromDate": start_date.strftime("%d/%m/%Y"),
                 "ToDate": end_date.strftime("%d/%m/%Y"),
+
                 "ExportType": "default",
-                "Cols": "TKLGD,TGTGD,VHTT,TGG,DC,TGPTG,KLGDKL,GTGDKL",
+
+                "Cols": (
+                    "TKLGD,TGTGD,VHTT,TGG,DC,"
+                    "TGPTG,KLGDKL,GTGDKL"
+                ),
+
                 "ExchangeID": "1",
             }
 
@@ -175,8 +233,10 @@ class VietstockClient:
 
             if isinstance(body, dict):
                 rows = body.get("Data", [])
+
             elif isinstance(body, list):
                 rows = body
+
             else:
                 rows = []
 
@@ -186,41 +246,114 @@ class VietstockClient:
             all_rows.extend(rows)
 
             print(
-                f"{symbol}: Trang {page_index}, "
-                f"da lay {len(all_rows)} dong"
+                f"{symbol}: {start_date:%d/%m/%Y} - "
+                f"{end_date:%d/%m/%Y} | "
+                f"Trang {page_index} | "
+                f"{len(all_rows)} dong"
             )
 
             if len(rows) < page_size:
                 break
 
             page_index += 1
-            time.sleep(0.5)
+
+            time.sleep(0.3)
+
+        return all_rows
+
+    def get_trading_data(
+        self,
+        symbol,
+        start_date,
+        end_date
+    ):
+
+        token = self._get_token()
+        all_rows = []
+
+        chunk_start = start_date
+
+        while chunk_start <= end_date:
+
+            chunk_end = min(
+                self._add_months(chunk_start, 6),
+                end_date
+            )
+
+            print(
+                f"\nDang lay {symbol}: "
+                f"{chunk_start:%d/%m/%Y} -> "
+                f"{chunk_end:%d/%m/%Y}"
+            )
+
+            rows = self._get_date_range(
+                symbol,
+                chunk_start,
+                chunk_end,
+                token
+            )
+
+            all_rows.extend(rows)
+
+            # Chuyển sang ngày tiếp theo, không chuyển kiểu dữ liệu
+            chunk_start = chunk_end + timedelta(days=1)
 
         if not all_rows:
             return pd.DataFrame()
 
         df = pd.DataFrame(all_rows)
 
-        # API co the da tra san StockCode, khong chen cot trung lap
+        # Ghi đè mã cổ phiếu để tránh lỗi cột trùng
         df["StockCode"] = symbol
 
         if "TradingDate" in df.columns:
-            df["Date"] = df["TradingDate"].apply(self._parse_date)
+            df["Date"] = df["TradingDate"].apply(
+                self._parse_date
+            )
 
         elif "Date" in df.columns:
-            df["Date"] = df["Date"].apply(self._parse_date)
+            df["Date"] = df["Date"].apply(
+                self._parse_date
+            )
 
         if "Date" in df.columns:
+
+            df["Date"] = pd.to_datetime(
+                df["Date"],
+                errors="coerce"
+            )
+
+            df = df.dropna(
+                subset=["Date"]
+            )
+
             df = df.drop_duplicates(
                 subset=["StockCode", "Date"]
             )
-            df = df.sort_values("Date")
+
+            df = df.sort_values(
+                "Date"
+            )
+
+            df = df[
+                (df["Date"] >= pd.Timestamp(start_date)) &
+                (df["Date"] <= pd.Timestamp(end_date))
+            ]
 
         df = df.reset_index(drop=True)
+
+        print(f"\n{symbol}: Tong cong {len(df)} phien")
+
+        if not df.empty:
+            print(
+                f"Ngay dau: {df['Date'].min().date()} | "
+                f"Ngay cuoi: {df['Date'].max().date()}"
+            )
 
         return df
 
     def close(self):
+
         if self.browser:
             self.browser.close()
 

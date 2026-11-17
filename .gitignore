@@ -37,3 +37,6 @@ __pycache__/
 *.pyc
 .ipynb_checkpoints/
 .env
+
+# Node.js dependencies
+node_modules/
