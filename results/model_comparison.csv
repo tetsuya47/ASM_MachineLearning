@@ -1,0 +1,9 @@
+﻿Model,Accuracy,Balanced Acc,Precision(Tang),Recall(Tang),F1-macro,ROC-AUC,CV F1-macro
+Decision Tree,0.549,0.537,0.471,0.451,0.537,0.548,0.499
+SVM (RBF),0.536,0.528,0.458,0.471,0.528,0.544,0.505
+Random Forest,0.538,0.528,0.459,0.461,0.528,0.528,0.497
+Random Forest (tuned),0.538,0.524,0.456,0.432,0.524,0.523,0.509
+Logistic Regression,0.519,0.504,0.432,0.405,0.504,0.509,0.488
+KNN,0.515,0.495,0.42,0.361,0.493,0.499,0.504
+Naive Bayes,0.546,0.507,0.442,0.244,0.487,0.518,0.515
+[Baseline: luon doan Giam],0.5729166666666667,0.5,0.0,0.0,,0.5,

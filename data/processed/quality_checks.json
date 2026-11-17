@@ -1,0 +1,27 @@
+{
+  "clean_input_rows": 4980,
+  "feature_rows": 4780,
+  "symbols": 10,
+  "train_rows": 3810,
+  "test_rows": 960,
+  "train_test_date_overlap": 0,
+  "train_target_dates_before_test": true,
+  "train_feature_means_after_scaling": {
+    "return": 0.0,
+    "ret_lag1": 0.0,
+    "ret_lag2": 0.0,
+    "ret5": -0.0,
+    "ma_ratio": -0.0,
+    "close_vs_ma20": 0.0,
+    "range_pct": -0.0,
+    "close_pos": -0.0,
+    "volume_change": -0.0,
+    "vol_ratio": 0.0,
+    "vol10": 0.0,
+    "rsi14": 0.0
+  },
+  "label_values": [
+    0,
+    1
+  ]
+}
