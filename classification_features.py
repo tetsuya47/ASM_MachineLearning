@@ -38,7 +38,12 @@ def load_clean_data(path) -> pd.DataFrame:
     path = Path(path)
     if not path.exists():
         raise FileNotFoundError(f"Khong tim thay du lieu sach cua Nguoi 1: {path}")
-    df = pd.read_csv(path)
+    return clean_dataframe(pd.read_csv(path, encoding="utf-8-sig"))
+
+
+def clean_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+    """Chuan hoa/kiem tra DataFrame OHLCV (dung chung cho huan luyen va du doan du lieu moi)."""
+    df = df.copy()
     df.columns = df.columns.str.strip()
     required = {"StockCode", "Date", "High", "Low", "Close", "Volume"}
     missing = required - set(df.columns)
@@ -58,8 +63,12 @@ def load_clean_data(path) -> pd.DataFrame:
     return df
 
 
-def build_classification_data(clean: pd.DataFrame) -> pd.DataFrame:
-    """Feature engineering theo tung StockCode; label la huong phien tiep theo."""
+def build_classification_data(clean: pd.DataFrame, for_inference: bool = False) -> pd.DataFrame:
+    """Feature engineering theo tung StockCode; label la huong phien tiep theo.
+
+    for_inference=True: giu cac dong moi nhat chua co phien ke tiep (label/target_date = NaN)
+    de predict.py dung cung 12 feature voi luc huan luyen.
+    """
     df = clean.copy()
     output = []
     for symbol, group in df.groupby("StockCode", sort=False):
@@ -105,6 +114,8 @@ def build_classification_data(clean: pd.DataFrame) -> pd.DataFrame:
 
     result = pd.concat(output, ignore_index=True)
     result = result.replace([np.inf, -np.inf], np.nan)
+    if for_inference:
+        return result.dropna(subset=FEATURES).sort_values(["Date", "StockCode"]).reset_index(drop=True)
     result = result.dropna(subset=FEATURES + ["target_date", LABEL]).copy()
     result[LABEL] = result[LABEL].astype("int8")
     return result.sort_values(["Date", "StockCode"]).reset_index(drop=True)

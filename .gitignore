@@ -1,7 +1,38 @@
+# Local Python environments — never commit
+.venv/
+venv/
+env/
+ENV/
+.python_env/
+python_env/
+.conda/
+conda-env/
+
+# Python cache / tests
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.ipynb_checkpoints/
+
+# Secrets / local config
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
 venv/
 .venv/
 env/
-ENV/
 __pycache__/
 *.pyc
 .ipynb_checkpoints/

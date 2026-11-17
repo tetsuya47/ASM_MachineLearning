@@ -1,0 +1,5 @@
+﻿k,Features,CV AUC,CV AUC std,CV F1-macro
+3,"ret_lag1, rsi14, return",0.5224,0.0557,0.5179
+5,"ret_lag1, rsi14, return, ret5, range_pct",0.5205,0.0445,0.5132
+8,"ret_lag1, rsi14, return, ret5, range_pct, volume_change, vol_ratio, close_pos",0.5103,0.0452,0.5108
+12,"ret_lag1, rsi14, return, ret5, range_pct, volume_change, vol_ratio, close_pos, vol10, close_vs_ma20, ret_lag2, ma_ratio",0.5028,0.0419,0.5032
